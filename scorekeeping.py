@@ -17,21 +17,24 @@ PICK_SCORE_PER_CORRECT_GUESSES = {
 
 
 def update_game_score(game_score):
-    print(f"Updating game {game_score}")
+    # print(f"Updating game {game_score}")
 
-    game_params = {
-        "home_team": TEAMS_MAPPING[game_score["home"]],
-        "away_team": TEAMS_MAPPING[game_score["away"]]
-    }
+    # game_params = {
+    #     "home_team": TEAMS_MAPPING[game_score["home"]],
+    #     "away_team": TEAMS_MAPPING[game_score["away"]]
+    # }
 
-    game = requests.get(
-        url=f"{COLINAS_PICKEM_API_BASE_URL}/schedule", params=game_params).json()
+    # game = requests.get(
+    #     url=f"{COLINAS_PICKEM_API_BASE_URL}/schedule", params=game_params).json()
 
-    if not game:
-        return
+    # if not game:
+    #     return
 
-    update_game_score_and_status(game=game[0], game_score=game_score)
-    update_pick_scores(game=game[0], game_score=game_score)
+    for i in range(1, 96):
+        game = requests.get(url=f"{COLINAS_PICKEM_API_BASE_URL}/game/{i}").json()  # noqa
+
+        # update_game_score_and_status(game=game[0], game_score=game_score)
+        update_pick_scores(game=game, game_score=game_score)
 
 
 def update_game_score_and_status(game, game_score):
@@ -51,14 +54,14 @@ def update_game_score_and_status(game, game_score):
 
 def update_pick_scores(game, game_score):
 
-    if game["status"] == GAME_FINAL_STATUS or game_score["status"] != GAME_FINAL_STATUS:
-        print(f"Game status did not changed to FINAL. Ignoring... {game}")
-        return
+    # if game["status"] == GAME_FINAL_STATUS or game_score["status"] != GAME_FINAL_STATUS:
+    #     print(f"Game status did not changed to FINAL. Ignoring... {game}")
+    #     return
 
     print(f"Updating scores for game {game['id']}")
 
     picks = get_game_picks(game=game)
-    winner = get_game_winner(game_score=game_score)
+    winner = get_game_winner(game=game)
     correct_pick_score = get_correct_pick_score(picks=picks, winner=winner)
 
     for pick in picks:
@@ -84,10 +87,10 @@ def get_game_picks(game):
     return requests.get(url=f"{COLINAS_PICKEM_API_BASE_URL}/pick", params=picks_params).json()
 
 
-def get_game_winner(game_score):
-    if game_score["home_score"] > game_score["away_score"]:
+def get_game_winner(game):
+    if game["home_team_score"] > game["away_team_score"]:
         return "H"
-    elif game_score["away_score"] > game_score["home_score"]:
+    elif game["away_team_score"] > game["home_team_score"]:
         return "A"
     else:
         return "T"
