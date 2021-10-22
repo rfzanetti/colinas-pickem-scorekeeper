@@ -58,7 +58,7 @@ def update_pick_scores(game, game_score):
     print(f"Updating scores for game {game['id']}")
 
     picks = get_game_picks(game=game)
-    winner = get_game_winner(game_score=game_score)
+    winner = get_game_winner(game=game)
     correct_pick_score = get_correct_pick_score(picks=picks, winner=winner)
 
     for pick in picks:
@@ -84,10 +84,10 @@ def get_game_picks(game):
     return requests.get(url=f"{COLINAS_PICKEM_API_BASE_URL}/pick", params=picks_params).json()
 
 
-def get_game_winner(game_score):
-    if game_score["home_score"] > game_score["away_score"]:
+def get_game_winner(game):
+    if game["home_team_score"] > game["away_team_score"]:
         return "H"
-    elif game_score["away_score"] > game_score["home_score"]:
+    elif game["away_team_score"] > game["home_team_score"]:
         return "A"
     else:
         return "T"
