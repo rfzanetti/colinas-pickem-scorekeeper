@@ -1,12 +1,10 @@
-from score_extraction import extract_scores
-from scorekeeping import update_game_score
+from extractor import extract_scores
+from scorekeeping import update_scores
 
 
 def handler(event, context):
     scores = extract_scores()
-
-    for score in scores:
-        update_game_score(game_score=score)
+    update_scores(scores=scores)
 
 
 if __name__ == "__main__":

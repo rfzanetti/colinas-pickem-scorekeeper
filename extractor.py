@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 
 SCOREBOARD_URL = "https://www.cbssports.com/nfl/scoreboard/"
 
-GAME_NOT_STARTED_STATUS = "NOT_STARTED"
-GAME_LIVE_STATUS = "LIVE"
-GAME_FINAL_STATUS = "FINAL"
+GAME_NOT_STARTED_STATUS = "not_started"
+GAME_LIVE_STATUS = "live"
+GAME_FINAL_STATUS = "final"
 
 
 def extract_scores():
@@ -34,16 +34,16 @@ def parse_game(game):
 def game_score(game):
     obj = dict()
 
-    teams = game.find_all(class_="team helper-team-name")
-    scores = game.find_all(class_="total-score")
+    teams = game.find_all(class_="team-name-link")
+    scores = game.find_all(class_="total")
 
     if teams:
         obj["away"] = teams[0].get_text()
         obj["home"] = teams[1].get_text()
 
         if scores:
-            obj["away_score"] = scores[0].get_text()
-            obj["home_score"] = scores[1].get_text()
+            obj["away_score"] = scores[1].get_text()
+            obj["home_score"] = scores[2].get_text()
         else:
             obj["away_score"] = 0
             obj["home_score"] = 0
@@ -63,3 +63,9 @@ def game_status(game):
         return {"status": GAME_FINAL_STATUS}
     else:
         return {"status": GAME_LIVE_STATUS}
+
+
+if __name__ == "__main__":
+    games = extract_scores()
+    for game in games:
+        print(game)

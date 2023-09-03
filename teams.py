@@ -17,7 +17,7 @@ TEAMS_MAPPING = {
     "Broncos": "DEN",
     "Giants": "NYG",
     "Eagles": "PHI",
-    "Football Team": "WSH",
+    "Commanders": "WAS",
     "Cowboys": "DAL",
     "Packers": "GB",
     "Vikings": "MIN",
